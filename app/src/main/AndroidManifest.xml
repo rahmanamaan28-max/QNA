@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Camera for question capture -->
+    <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--
+        Deliberately NO android.permission.INTERNET and NO ACCESS_NETWORK_STATE.
+        Omitting INTERNET makes the OS itself block all outbound sockets for this
+        app, which is the strongest guarantee of the "no hidden network calls"
+        requirement: even a bug in third-party code cannot reach the network.
+        Document import uses the Storage Access Framework (no storage permission
+        needed either).
+    -->
+
+    <application
+        android:name=".OfflineStudyApp"
+        android:allowBackup="false"
+        android:label="Offline Study Solver"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.OfflineStudySolver"
+        android:usesCleartextTraffic="false"
+        tools:targetApi="34"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Background worker that indexes newly imported documents. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge" />
+    </application>
+</manifest>
